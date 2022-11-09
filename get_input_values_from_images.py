@@ -2,6 +2,7 @@ import numpy as np
 import cv2
 import os
 
+#we are getting values for each input from the frames by opening each frame and pinpointing the ROI for each value by the coordinates where it is represented on the frame
 def get_values():
     images = []
     for filename in os.listdir('images'):
@@ -10,7 +11,8 @@ def get_values():
         brake = image[342:388, 618:632]
         right = image[390:397, 633:647]
         left = image[390:397, 618:632]
-
+        
+# after we defined the ROIs, we need to determine color ranges from which we will count the amounth of pixels in the specific ROI
         green_min = np.array([0, 50, 0], np.uint8)
         green_max = np.array([60, 255, 60], np.uint8)
 
@@ -36,14 +38,32 @@ def get_values():
         no_left = cv2.countNonZero(dsl)
         print('The number of left blue pixels is: ' + str(no_left))
 
+# we create .txt files named the same as the images they are reffering to and writing the obtained values in them       
         f = open('labels/'+filename+'.txt', 'w')
         f.write(f'{no_throttle},{no_brake},{no_left},{no_right}')
         f.close()
+        
+        
+def normalize_values():
+	max_throttle = 590
+	max_brake = 590
+	max_left = 270
+    max_right = 270
 
-       # cv2.imshow('window', throttle)
-        #if cv2.waitKey(25) & 0xFF == ord('q'):
-         #   cv2.destroyAllWindows()
-          #  break
+	for filename in os.listdir('labels'):
+		f = open(filename)
+		values = f.read(filename)
+		t, b, l, r = values.split (',')
+        nt = t/max_throttle
+        nb = b/max_brake
+        steering = 0.0
+        if l>r :
+            steering = l/max_left * -1
+        elif r>l :
+             steering = r/max_right
+        else:
+            steering = 0.0
+                
 
 
 get_values()
