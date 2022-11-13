@@ -43,7 +43,7 @@ def get_values():
         f.write(f'{no_throttle},{no_brake},{no_left},{no_right}')
         f.close()
         
-        
+# NOT FINISHED OR TESTED!!!! create a function for nomralizing values        
 def normalize_values():
 	max_throttle = 590
 	max_brake = 590
